@@ -40,7 +40,11 @@ public class MainActivity extends Activity {
                 .build();
         mGoogleApiClient.connect();
 
+
     }
+
+
+
 
     public void onClickCheckButton(View view) {
 
@@ -74,6 +78,8 @@ public class MainActivity extends Activity {
         });
         return statusFlag;
     }
+
+
 
 }
 
