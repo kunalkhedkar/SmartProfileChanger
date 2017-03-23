@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.kunal.smartprofilechanger">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
@@ -20,6 +22,10 @@
 
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
+            android:value="AIzaSyBSoHIYibbPT0sfvfCj5Xq6LDX7w3W6lO4" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBSoHIYibbPT0sfvfCj5Xq6LDX7w3W6lO4" />
 
 
