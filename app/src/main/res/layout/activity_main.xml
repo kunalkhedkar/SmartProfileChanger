@@ -12,18 +12,19 @@
 
     <TextView
         android:id="@+id/status"
-        android:textSize="25sp"
-        android:layout_centerInParent="true"
+        android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Location"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/checkLocation"
-        android:onClick="onClickCheckButton"
-        android:layout_width="wrap_content"
+        android:onClick="onClick_getCurrentLocationButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Check"
+        android:text="Get location"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         />
@@ -31,7 +32,7 @@
     <Button
         android:onClick="onclick_changeProfileButton"
         android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Change profile"
         android:layout_above="@+id/checkLocation" />

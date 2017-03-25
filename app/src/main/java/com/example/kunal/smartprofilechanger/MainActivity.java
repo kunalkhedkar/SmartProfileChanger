@@ -37,15 +37,15 @@ public class MainActivity extends Activity {
     private final static String TAG = "mainActivity";
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     private static final String ACCESS_FINE_LOCATION = "android.permission.ACCESS_FINE_LOCATION";
+    boolean statusFlag = false;
     private GoogleApiClient mGoogleApiClient;
     private TextView status_tv;
-    boolean statusFlag = false;
 
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         MultiDex.install(this);
-        // updated...................
+        // updated
     }
 
     @Override
@@ -73,6 +73,13 @@ public class MainActivity extends Activity {
     }
 
 
+    public void onClick_getCurrentLocationButton(View view) {
+
+        checkGPS();
+        getCurrentLocation();
+    }
+
+
     public void checkGPS() {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean enabled = service
@@ -80,11 +87,11 @@ public class MainActivity extends Activity {
 
         if (!enabled) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Enable Location");
 
-            builder.setMessage("please enable location service to continue!!");
+            builder.setMessage("Please enable location service to continue!!");
 
             builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                 @Override
@@ -104,20 +111,16 @@ public class MainActivity extends Activity {
     }
 
 
-    public void onClickCheckButton(View view) {
-
-        checkGPS();
-        getCurrentLocation();
-    }
 
     private void getCurrentLocation() {
 
         final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setCancelable(false);
+        dialog.setTitle("title");
+        dialog.setMessage("message");
         dialog.show();
 
         if (checkLocationPermission()) {
-            // Toast.makeText(this, "write code", Toast.LENGTH_SHORT).show();
             status_tv.setText("");
 
             Awareness.SnapshotApi.getLocation(mGoogleApiClient).
@@ -125,6 +128,7 @@ public class MainActivity extends Activity {
                         @Override
                         public void onResult(@NonNull LocationResult locationResult) {
                             if (!locationResult.getStatus().isSuccess()) {
+
                                 status_tv.setText("Could not get location");
                                 status_tv.setTextColor(Color.RED);
                                 return;
@@ -153,8 +157,7 @@ public class MainActivity extends Activity {
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
         } else {
-            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-            // Awareness API code goes here
+            //Permission granted
             return true;
         }
 
