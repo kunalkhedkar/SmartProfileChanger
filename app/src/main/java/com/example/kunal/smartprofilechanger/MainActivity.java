@@ -2,7 +2,6 @@ package com.example.kunal.smartprofilechanger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +29,8 @@ import com.google.android.gms.awareness.Awareness;
 import com.google.android.gms.awareness.snapshot.LocationResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+
+import static java.lang.Thread.sleep;
 
 
 public class MainActivity extends Activity {
@@ -75,8 +76,16 @@ public class MainActivity extends Activity {
 
     public void onClick_getCurrentLocationButton(View view) {
 
+
         checkGPS();
         getCurrentLocation();
+
+
+    }
+
+
+    public void onClick_getMapLocationButton(View view) {
+        //TODO
     }
 
 
@@ -111,14 +120,14 @@ public class MainActivity extends Activity {
     }
 
 
-
     private void getCurrentLocation() {
 
         final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setTitle("Retrieving Location");
+        dialog.setMessage("please wait");
         dialog.setCancelable(false);
-        dialog.setTitle("title");
-        dialog.setMessage("message");
         dialog.show();
+
 
         if (checkLocationPermission()) {
             status_tv.setText("");
@@ -128,21 +137,24 @@ public class MainActivity extends Activity {
                         @Override
                         public void onResult(@NonNull LocationResult locationResult) {
                             if (!locationResult.getStatus().isSuccess()) {
-
                                 status_tv.setText("Could not get location");
                                 status_tv.setTextColor(Color.RED);
-                                return;
+
+                                if (dialog.isShowing())
+                                    dialog.dismiss();
+
                             } else {
                                 Location location = locationResult.getLocation();
                                 status_tv.setText("loc is : " + location.toString());
                                 Log.d(TAG, "onResult: " + location.toString());
                                 status_tv.setTextColor(Color.GREEN);
+
+                                if (dialog.isShowing())
+                                    dialog.dismiss();
                             }
                         }
                     });
-
         }
-        dialog.dismiss();
     }
 
     private boolean checkLocationPermission() {

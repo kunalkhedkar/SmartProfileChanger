@@ -20,7 +20,7 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:id="@+id/checkLocation"
+        android:id="@+id/GetLocation"
         android:onClick="onClick_getCurrentLocationButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,10 +30,19 @@
         />
 
     <Button
+        android:id="@+id/getLocationFromMaps"
+        android:onClick="onClick_getMapLocationButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get location from maps"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/GetLocation" />
+
+    <Button
         android:onClick="onclick_changeProfileButton"
         android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Change profile"
-        android:layout_above="@+id/checkLocation" />
+        android:layout_above="@id/getLocationFromMaps" />
 </RelativeLayout>
