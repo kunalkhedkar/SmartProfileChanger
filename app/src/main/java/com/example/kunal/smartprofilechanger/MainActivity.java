@@ -27,8 +27,12 @@ import android.widget.Toast;
 import com.google.android.gms.awareness.Awareness;
 
 import com.google.android.gms.awareness.snapshot.LocationResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
 import static java.lang.Thread.sleep;
 
@@ -38,6 +42,7 @@ public class MainActivity extends Activity {
     private final static String TAG = "mainActivity";
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     private static final String ACCESS_FINE_LOCATION = "android.permission.ACCESS_FINE_LOCATION";
+    private static final int PLACE_PICKER_REQUEST_CODE = 123;
     boolean statusFlag = false;
     private GoogleApiClient mGoogleApiClient;
     private TextView status_tv;
@@ -85,9 +90,36 @@ public class MainActivity extends Activity {
 
 
     public void onClick_getMapLocationButton(View view) {
-        //TODO
+
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            Intent intent = builder.build(this);
+
+            startActivityForResult(intent, PLACE_PICKER_REQUEST_CODE);
+
+
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                String placeinfo = String.valueOf(place.getAddress());
+                status_tv.setText(placeinfo);
+                status_tv.append("\n" + place.getLatLng().toString());
+            }
+
+        }
+    }
 
     public void checkGPS() {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
