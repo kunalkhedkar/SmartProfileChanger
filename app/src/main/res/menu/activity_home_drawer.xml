@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="Add Location">
+        <menu>
+            <item
+                android:id="@+id/nav_addLocation_current"
+                android:icon="@drawable/ic_current_location_gps"
+                android:title="Add Current location" />
+
+            <item
+                android:id="@+id/nav_addLocation_map"
+                android:icon="@drawable/ic_add_location_map"
+                android:title="Add location From maps" />
+
+        </menu>
+    </item>
+
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+    </group>
+
+</menu>

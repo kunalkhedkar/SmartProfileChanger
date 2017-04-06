@@ -19,6 +19,7 @@ import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -37,7 +38,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import static java.lang.Thread.sleep;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "mainActivity";
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
