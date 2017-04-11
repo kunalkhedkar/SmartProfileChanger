@@ -84,6 +84,19 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        setHomePage();
+    }
+
+    private void setHomePage() {
+
+        HomeFragment homeFragment = new HomeFragment();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content_home, homeFragment).commit();
+
     }
 
     @Override

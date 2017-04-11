@@ -13,4 +13,5 @@
     tools:context="com.example.kunal.smartprofilechanger.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
+
 </RelativeLayout>
