@@ -4,13 +4,10 @@
     android:layout_height="match_parent"
     tools:context="com.example.kunal.smartprofilechanger.HomeFragment">
 
-
-    <TextView
-        android:padding="5dp"
-        android:textSize="18sp"
-        android:id="@+id/showdata"
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/locations_detail_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Welcome" />
+        android:layout_height="match_parent">
 
+    </ListView>
 </FrameLayout>

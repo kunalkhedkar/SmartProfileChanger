@@ -24,8 +24,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        //    db.execSQL("create table " + LOCATION_TABLE +
+        //              " (LOCATION_NAME TEXT,LAT DOUBLE,LNG DOUBLE,SOUND_PROFILE INTEGER)");
+
+
         db.execSQL("create table " + LOCATION_TABLE +
-                " (LOCATION_NAME TEXT,LAT DOUBLE,LNG DOUBLE,SOUND_PROFILE INTEGER)");
+                " ( " + R.string.LOCATION_NAME_DB_COLOUM + " TEXT ," +
+                " " + R.string.LAT_DB_COLOUM + " DOUBLE," +
+                " " + R.string.LNG_DB_COLOUM + "DOUBLE," +
+                " " + R.string.SOUND_PROFILE_DB_COLOUM + " INTEGER)");
+
+
 
     }
 

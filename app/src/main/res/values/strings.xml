@@ -7,6 +7,13 @@
 
     <string name="action_settings">Settings</string>
 
+
+    <string name="LOCATION_NAME_DB_COLOUM">LOCATION_NAME</string>
+    <string name="LAT_DB_COLOUM">LAT</string>
+    <string name="LNG_DB_COLOUM">LNG</string>
+    <string name="SOUND_PROFILE_DB_COLOUM">SOUND_PROFILE</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

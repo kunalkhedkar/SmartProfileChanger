@@ -7,7 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -17,10 +22,14 @@ public class HomeFragment extends Fragment {
 
 
     View view;
-    TextView tv_showdata;
+
+    ListView locationDetails_listview;
 
     MyDatabaseHelper myDatabaseHelper;
 
+
+    private String[] FORM = new String[]{String.valueOf(R.string.LOCATION_NAME_DB_COLOUM), String.valueOf(R.string.LAT_DB_COLOUM), String.valueOf(R.string.LNG_DB_COLOUM), String.valueOf(R.string.SOUND_PROFILE_DB_COLOUM)};
+    private int[] TO = new int[]{R.id.locationName, R.id.latitude, R.id.longitude, R.id.soundProfile};
 
     public HomeFragment() {
         // Required empty public constructor
@@ -35,7 +44,8 @@ public class HomeFragment extends Fragment {
         myDatabaseHelper = new MyDatabaseHelper(getContext());
 
 
-        tv_showdata = (TextView) view.findViewById(R.id.showdata);
+        locationDetails_listview = (ListView) view.findViewById(R.id.locations_detail_list_view);
+
 
 
         return view;
@@ -45,11 +55,27 @@ public class HomeFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        getdata();
+
+        build_location_list();
     }
 
-    private void getdata() {
-        tv_showdata.setText("");
+    private void build_location_list() {
+
+        ArrayList<HashMap<String, String>> data = populateData();
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), data,
+                R.layout.location_item_list, FORM, TO);
+        locationDetails_listview.setAdapter(simpleAdapter);
+
+    }
+
+    private ArrayList<HashMap<String, String>> populateData() {
+
+        ArrayList<HashMap<String, String>> details = new ArrayList<>();
+        String location_name;
+        Double latitude, longitude;
+        int sound_profile;
+
 
         Cursor cursor = myDatabaseHelper.getLocationFromDatabase();
 
@@ -58,25 +84,27 @@ public class HomeFragment extends Fragment {
 
 
             while (cursor.moveToNext()) {
-                String loc_name = cursor.getString(0);
-                double lat = cursor.getDouble(1);
-                double lng = cursor.getDouble(2);
-                int sound_profile = Integer.parseInt(cursor.getString(3));
-
-                tv_showdata.append(loc_name);
-                tv_showdata.append("\n" + lat);
-                tv_showdata.append("\n" + lng);
-                tv_showdata.append("\n" + sound_profile);
-                tv_showdata.append("\n---------------------------------------------------------\n");
+                location_name = cursor.getString(0);
+                latitude = cursor.getDouble(1);
+                longitude = cursor.getDouble(2);
+                sound_profile = Integer.parseInt(cursor.getString(3));
 
 
-                cursor.moveToNext();
+                HashMap<String, String> locationDetail = new HashMap<>();
+
+                locationDetail.put(String.valueOf(R.string.LOCATION_NAME_DB_COLOUM), location_name);
+                locationDetail.put(String.valueOf(R.string.LAT_DB_COLOUM), String.valueOf(latitude));
+                locationDetail.put(String.valueOf(R.string.LNG_DB_COLOUM), String.valueOf(longitude));
+                locationDetail.put(String.valueOf(R.string.SOUND_PROFILE_DB_COLOUM), String.valueOf(sound_profile));
+
+
+                details.add(locationDetail);
 
             }
-
         }
-
+        return details;
 
     }
+
 
 }
