@@ -12,7 +12,6 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +22,7 @@
         <TextView
             android:textStyle="bold"
             android:id="@+id/locationName"
-            android:textColor="@color/colorAccent"
+            android:textColor="#00009C"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -31,8 +30,28 @@
             tools:text="office" />
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
 
-    <LinearLayout
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:contextClickable="true"
+                android:id="@+id/list_menu"
+                android:layout_alignParentRight="true"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_menu"
+                android:clickable="true"
+                android:layout_marginRight="-10dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/lat_layout"
         android:layout_marginTop="7dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +72,7 @@
             android:ellipsize="end"
             android:textColor="@color/colorAccent"
             android:id="@+id/latitude"
-            android:layout_width="144dp"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:layout_marginLeft="20dp"
@@ -63,6 +82,7 @@
 
 
     <LinearLayout
+        android:layout_below="@+id/lat_layout"
         android:layout_marginLeft="50dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -84,28 +104,17 @@
             android:layout_marginTop="6dp"
             android:textColor="@color/colorAccent"
             android:id="@+id/longitude"
-            android:layout_width="142dp"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:textSize="15sp"
             tools:text="53.121993" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_edit"
-                android:onClick="delete_exam"
-                android:clickable="true"
-                android:layout_marginRight="7dp" />
-        </RelativeLayout>
 
     </LinearLayout>
 
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -122,6 +131,7 @@
             android:textSize="15sp" />
 
         <TextView
+            android:layout_marginBottom="7dp"
             android:textStyle="bold"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="6dp"
@@ -129,7 +139,7 @@
             android:id="@+id/soundProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="17sp"
             tools:text="Mute" />
 
     </LinearLayout>

@@ -1,17 +1,27 @@
 package com.example.kunal.smartprofilechanger;
 
 
+import android.content.Context;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,7 +33,7 @@ public class HomeFragment extends Fragment {
 
 
     View view;
-
+    ImageView listview_menu;
     ListView locationDetails_listview;
 
     MyDatabaseHelper myDatabaseHelper;
@@ -48,6 +58,22 @@ public class HomeFragment extends Fragment {
         locationDetails_listview = (ListView) view.findViewById(R.id.locations_detail_list_view);
 
 
+        build_location_list();
+
+    /*    listview_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                View parentrow= (View) v.getParent();
+
+                PopupMenu popupMenu=new PopupMenu(getContext(),v);
+                MenuInflater inflater=popupMenu.getMenuInflater();
+                inflater.inflate(R.menu.item_menu,popupMenu.getMenu());
+                popupMenu.show();
+
+            }
+        });
+*/
         return view;
     }
 
@@ -57,6 +83,7 @@ public class HomeFragment extends Fragment {
 
 
         build_location_list();
+
     }
 
     private void build_location_list() {
@@ -64,10 +91,60 @@ public class HomeFragment extends Fragment {
         ArrayList<HashMap<String, String>> data = populateData();
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), data,
-                R.layout.location_item_list, FORM, TO);
+                R.layout.location_item_list, FORM, TO) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+
+                View v = super.getView(position, convertView, parent);
+
+                listview_menu = (ImageView) v.findViewById(R.id.list_menu);
+                listview_menu.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        // menu [ delete,edit ]
+
+                        PopupMenu popupMenu = new PopupMenu(getContext(), v);
+                        MenuInflater inflater = popupMenu.getMenuInflater();
+                        inflater.inflate(R.menu.item_menu, popupMenu.getMenu());
+
+                        popupMenu.show();
+
+
+                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+
+                                switch (item.getItemId()) {
+
+                                    case R.id.delete_menu:
+                                        Toast.makeText(getContext(), "TODO delete", Toast.LENGTH_SHORT).show();
+                                        return true;
+                                    case R.id.edit_menu:
+                                        Toast.makeText(getContext(), "TODO edit", Toast.LENGTH_SHORT).show();
+                                        return true;
+                                }
+
+
+                                return false;
+                            }
+                        });
+
+                    }
+                });
+                return v;
+            }
+
+
+        };
+
         locationDetails_listview.setAdapter(simpleAdapter);
 
+
     }
+
 
     private ArrayList<HashMap<String, String>> populateData() {
 

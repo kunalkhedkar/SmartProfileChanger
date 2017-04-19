@@ -157,6 +157,8 @@ public class HomeNavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
 
+            Toast.makeText(this, "TODO", Toast.LENGTH_SHORT).show();
+
         }
 
 
