@@ -1,12 +1,11 @@
 package com.example.kunal.smartprofilechanger;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -24,7 +23,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.awareness.Awareness;
@@ -32,11 +30,18 @@ import com.google.android.gms.awareness.snapshot.LocationResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
-public class HomeActivity extends AppCompatActivity
+public class HomeNavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -164,6 +169,7 @@ public class HomeActivity extends AppCompatActivity
     private void getLocationFrom_currentLocation() {
 
         checkGPS();
+
         getCurrentLocation();
 
     }
@@ -175,8 +181,7 @@ public class HomeActivity extends AppCompatActivity
                 .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!enabled) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+           /* AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Enable Location");
 
@@ -194,7 +199,35 @@ public class HomeActivity extends AppCompatActivity
 
             AlertDialog diag = builder.create();
             diag.show();
+*/
 
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setTitle("Enable GPS");
+            alertDialog.setMessage("Enable GPS in your settings for receiving active location details.");
+
+
+            //Positive "YES" button
+            alertDialog.setPositiveButton("SETTINGS", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                    dialog.dismiss();
+
+                }
+            });
+
+            // Negative "NO" Button
+            alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+
+                    // Do nothing
+
+                    dialog.cancel();
+                }
+            });
+
+            alertDialog.show();
 
         }
     }
@@ -216,7 +249,7 @@ public class HomeActivity extends AppCompatActivity
                         @Override
                         public void onResult(@NonNull LocationResult locationResult) {
                             if (!locationResult.getStatus().isSuccess()) {
-                                Toast.makeText(HomeActivity.this, "Could not get location", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeNavigationActivity.this, "Could not get location", Toast.LENGTH_SHORT).show();
 
                                 if (dialog.isShowing())
                                     dialog.dismiss();
@@ -311,7 +344,7 @@ public class HomeActivity extends AppCompatActivity
 
     private void startFragmentAddLocation(double latitude, double longitude) {
 
-        FragmentAddLocation fragment_addLocation_ = FragmentAddLocation.newInstance(latitude, longitude);
+        AddLocationFragment fragment_addLocation_ = AddLocationFragment.newInstance(latitude, longitude);
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content_home, fragment_addLocation_).commitAllowingStateLoss();

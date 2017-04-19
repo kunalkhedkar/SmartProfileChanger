@@ -12,6 +12,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +56,7 @@
             android:layout_width="144dp"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:layout_marginLeft="72dp"
+            android:layout_marginLeft="20dp"
             tools:text="73.454748" />
 
     </LinearLayout>
@@ -85,7 +86,7 @@
             android:id="@+id/longitude"
             android:layout_width="142dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="72dp"
+            android:layout_marginLeft="20dp"
             android:textSize="15sp"
             tools:text="53.121993" />
 
@@ -107,12 +108,12 @@
 
 
     <LinearLayout
-        android:layout_marginLeft="50dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
+            android:layout_marginLeft="6dp"
             android:layout_marginTop="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

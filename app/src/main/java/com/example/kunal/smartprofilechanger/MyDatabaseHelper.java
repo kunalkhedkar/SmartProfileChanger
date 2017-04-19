@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static java.sql.Types.DOUBLE;
+
 /**
  * Created by kunal on 6/4/17.
  */
@@ -24,16 +26,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        //    db.execSQL("create table " + LOCATION_TABLE +
-        //              " (LOCATION_NAME TEXT,LAT DOUBLE,LNG DOUBLE,SOUND_PROFILE INTEGER)");
+        db.execSQL("create table " + LOCATION_TABLE +
+                " (LOCATION_NAME TEXT,LAT DOUBLE,LNG DOUBLE,SOUND_PROFILE INTEGER)");
 
-
+/*
         db.execSQL("create table " + LOCATION_TABLE +
                 " ( " + R.string.LOCATION_NAME_DB_COLOUM + " TEXT ," +
-                " " + R.string.LAT_DB_COLOUM + " DOUBLE," +
-                " " + R.string.LNG_DB_COLOUM + "DOUBLE," +
-                " " + R.string.SOUND_PROFILE_DB_COLOUM + " INTEGER)");
-
+                "  + R.string.LAT_DB_COLOUM + " DOUBLE," +
+                 " + R.string.LNG_DB_COLOUM + "DOUBLE," +
+                 " + R.string.SOUND_PROFILE_DB_COLOUM + " INTEGER)");
+*/
 
 
     }

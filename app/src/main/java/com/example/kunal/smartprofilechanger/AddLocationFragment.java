@@ -1,11 +1,8 @@
 package com.example.kunal.smartprofilechanger;
 
 
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,15 +16,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 
-import static android.app.Activity.RESULT_OK;
-
-
-public class FragmentAddLocation extends Fragment {
+public class AddLocationFragment extends Fragment {
 
     public final static String LAT_KEY = "LAT_KEY";
     public final static String LNG_KEY = "LNG_KEY";
@@ -42,14 +32,14 @@ public class FragmentAddLocation extends Fragment {
 
     MyDatabaseHelper myDatabaseHelper;
 
-    public FragmentAddLocation() {
+    public AddLocationFragment() {
         // Required empty public constructor
     }
 
 
-    public static FragmentAddLocation newInstance(double latitude, double longitude) {
+    public static AddLocationFragment newInstance(double latitude, double longitude) {
 
-        FragmentAddLocation fragment = new FragmentAddLocation();
+        AddLocationFragment fragment = new AddLocationFragment();
 
         Bundle args = new Bundle();
         args.putDouble(LAT_KEY, latitude);
@@ -104,7 +94,7 @@ public class FragmentAddLocation extends Fragment {
                         Toast.makeText(getContext(), "Fail to add Location,Try again ", Toast.LENGTH_SHORT).show();
                 }
 
-                setHomePaFragment();
+                setHomePageFragment();
 
             }
         });
@@ -117,7 +107,7 @@ public class FragmentAddLocation extends Fragment {
                 Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
 
 
-                setHomePaFragment();
+                setHomePageFragment();
 
             }
         });
@@ -169,7 +159,7 @@ public class FragmentAddLocation extends Fragment {
 
     }
 
-    private void setHomePaFragment() {
+    private void setHomePageFragment() {
         HomeFragment homeFragment = new HomeFragment();
 
         FragmentManager fragmentManager = getFragmentManager();

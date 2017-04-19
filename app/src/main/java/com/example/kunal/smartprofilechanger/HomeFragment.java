@@ -2,6 +2,7 @@ package com.example.kunal.smartprofilechanger;
 
 
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -45,7 +46,6 @@ public class HomeFragment extends Fragment {
 
 
         locationDetails_listview = (ListView) view.findViewById(R.id.locations_detail_list_view);
-
 
 
         return view;
@@ -95,7 +95,7 @@ public class HomeFragment extends Fragment {
                 locationDetail.put(String.valueOf(R.string.LOCATION_NAME_DB_COLOUM), location_name);
                 locationDetail.put(String.valueOf(R.string.LAT_DB_COLOUM), String.valueOf(latitude));
                 locationDetail.put(String.valueOf(R.string.LNG_DB_COLOUM), String.valueOf(longitude));
-                locationDetail.put(String.valueOf(R.string.SOUND_PROFILE_DB_COLOUM), String.valueOf(sound_profile));
+                locationDetail.put(String.valueOf(R.string.SOUND_PROFILE_DB_COLOUM), getSoundProfileInStringFormat(sound_profile));
 
 
                 details.add(locationDetail);
@@ -103,6 +103,29 @@ public class HomeFragment extends Fragment {
             }
         }
         return details;
+
+    }
+
+    private String getSoundProfileInStringFormat(int sound_profile_code) {
+
+        String soundProfileArray[] = getContext().getResources().getStringArray(R.array.soundProfile_array);
+
+        if (sound_profile_code == AudioManager.RINGER_MODE_NORMAL) {
+
+
+            return soundProfileArray[0];
+
+        } else if (sound_profile_code == AudioManager.RINGER_MODE_VIBRATE) {
+
+            return soundProfileArray[1];
+
+        } else if (sound_profile_code == AudioManager.RINGER_MODE_SILENT) {
+
+            return soundProfileArray[2];
+
+        }
+
+        return "Default";
 
     }
 
