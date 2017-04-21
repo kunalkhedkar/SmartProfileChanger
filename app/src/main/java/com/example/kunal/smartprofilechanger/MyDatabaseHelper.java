@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import static java.sql.Types.DOUBLE;
 
@@ -27,7 +31,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("create table " + LOCATION_TABLE +
-                " (LOCATION_NAME TEXT,LAT DOUBLE,LNG DOUBLE,SOUND_PROFILE INTEGER)");
+                " (LOCATION_NAME TEXT  PRIMARY KEY,LAT DOUBLE,LNG DOUBLE,SOUND_PROFILE INTEGER)");
 
 /*
         db.execSQL("create table " + LOCATION_TABLE +
@@ -62,13 +66,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("LNG", LNG);
         contentValues.put("SOUND_PROFILE", SOUND_PROFILE);
 
-        try {
 
-            result = db.insert(LOCATION_TABLE, null, contentValues);
+        result = db.insertWithOnConflict(LOCATION_TABLE, null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
 
-        } catch (Exception e) {
-            return false;
-        }
 
         if (result == -1) {
             return false;

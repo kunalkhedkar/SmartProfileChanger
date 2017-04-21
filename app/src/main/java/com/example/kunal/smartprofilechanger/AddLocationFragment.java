@@ -90,11 +90,13 @@ public class AddLocationFragment extends Fragment {
 
                     if (myDatabaseHelper.insertLocationToDatabase(loc_name, lat, lng, soundProfile)) {
                         Toast.makeText(getContext(), "Location added successfully", Toast.LENGTH_SHORT).show();
+                        setHomePageFragment();
                     } else
-                        Toast.makeText(getContext(), "Fail to add Location,Try again ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Location name already exists ", Toast.LENGTH_SHORT).show();
+                    refillingDataToForm(loc_name, soundProfileSpinner.getSelectedItemPosition(), lat, lng);
                 }
 
-                setHomePageFragment();
+
 
             }
         });
@@ -124,6 +126,15 @@ public class AddLocationFragment extends Fragment {
         soundProfileSpinner.setAdapter(adapter);
 
         return view;
+
+    }
+
+    private void refillingDataToForm(String loc_name, int position, Double lat, Double lng) {
+
+        locationName.setText(loc_name);
+        tv_lat.setText(String.valueOf(lat));
+        tv_lng.setText(String.valueOf(lng));
+        soundProfileSpinner.setSelection(position);
 
     }
 
