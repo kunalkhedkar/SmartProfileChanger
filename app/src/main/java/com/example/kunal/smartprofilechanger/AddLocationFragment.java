@@ -1,11 +1,18 @@
 package com.example.kunal.smartprofilechanger;
 
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +23,27 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.fence.AwarenessFence;
+import com.google.android.gms.awareness.fence.FenceUpdateRequest;
+import com.google.android.gms.awareness.fence.LocationFence;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallbacks;
+import com.google.android.gms.common.api.Status;
+
+import static android.R.attr.radius;
+import static com.example.kunal.smartprofilechanger.R.id.longitude;
+
 
 public class AddLocationFragment extends Fragment {
 
+    public final static String TAG = "LOG";
     public final static String LAT_KEY = "LAT_KEY";
     public final static String LNG_KEY = "LNG_KEY";
+    private final static double RADIUS = 100;
+    private final static long dwellTimeMillis = 1 * 1000;
+
+    private GoogleApiClient googleApiClient;
 
     View view;
     private Spinner soundProfileSpinner;
@@ -31,6 +54,7 @@ public class AddLocationFragment extends Fragment {
 
 
     MyDatabaseHelper myDatabaseHelper;
+    private LocationFenceReceiver locationFenceReceiver;
 
     public AddLocationFragment() {
         // Required empty public constructor
@@ -46,6 +70,13 @@ public class AddLocationFragment extends Fragment {
         args.putDouble(LNG_KEY, longitude);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private void initGoogleAwareness() {
+        googleApiClient = new GoogleApiClient.Builder(getContext())
+                .addApi(Awareness.API)
+                .build();
+        googleApiClient.connect();
     }
 
 
@@ -68,6 +99,7 @@ public class AddLocationFragment extends Fragment {
 
         myDatabaseHelper = new MyDatabaseHelper(getContext());
 
+
         locationName = (EditText) view.findViewById(R.id.edit_location);
         tv_lat = (TextView) view.findViewById(R.id.value_lat);
         tv_lng = (TextView) view.findViewById(R.id.value_lng);
@@ -75,6 +107,8 @@ public class AddLocationFragment extends Fragment {
 
         addButton = (Button) view.findViewById(R.id.addButton);
         cancelButton = (Button) view.findViewById(R.id.cancelButton);
+
+        initGoogleAwareness();
 
         // add
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +124,11 @@ public class AddLocationFragment extends Fragment {
 
                     if (myDatabaseHelper.insertLocationToDatabase(loc_name, lat, lng, soundProfile)) {
                         Toast.makeText(getContext(), "Location added successfully", Toast.LENGTH_SHORT).show();
+
+
+                        createAndRegisterFence(lat, lng, loc_name);
+
+
                         setHomePageFragment();
                     } else
                         Toast.makeText(getContext(), "Location name already exists ", Toast.LENGTH_SHORT).show();
@@ -169,6 +208,69 @@ public class AddLocationFragment extends Fragment {
         tv_lng.setText(String.valueOf(LONGITUDE));
 
     }
+
+
+    private void createAndRegisterFence(final double lat, final double lng, final String loc_name_asfence_key) {
+        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        AwarenessFence spaceFence = LocationFence.in(lat, lng, RADIUS, dwellTimeMillis);
+        locationFenceReceiver = new LocationFenceReceiver();
+
+
+        Intent receiverIntent = new Intent(LocationFenceReceiver.LOCATION_RECEIVER_ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, receiverIntent, 0);
+        // register to Google Awareness
+        Awareness.FenceApi.updateFences(googleApiClient,
+                new FenceUpdateRequest.Builder().addFence(loc_name_asfence_key, spaceFence, pendingIntent).build()).
+                setResultCallback(new ResultCallbacks<Status>() {
+                    @Override
+                    public void onSuccess(@NonNull Status status) {
+                        Log.d(TAG, "onSuccess: Fence has been registered " + loc_name_asfence_key);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Status status) {
+                        Log.d(TAG, "onSuccess: Fail to resister fence " + loc_name_asfence_key);
+                        Toast.makeText(getContext(), "Fail to resister fence", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getActivity().registerReceiver(locationFenceReceiver, new IntentFilter(LocationFenceReceiver.LOCATION_RECEIVER_ACTION));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        getActivity().registerReceiver(locationFenceReceiver, new IntentFilter(LocationFenceReceiver.LOCATION_RECEIVER_ACTION));
+    }
+
+    @Override
+    public void onStop() {
+/*        if (locationFenceReceiver!=null) {
+            getActivity().unregisterReceiver(locationFenceReceiver);
+            locationFenceReceiver=null;
+        }
+*/
+        super.onStop();
+    }
+
+
+
 
     private void setHomePageFragment() {
         HomeFragment homeFragment = new HomeFragment();
