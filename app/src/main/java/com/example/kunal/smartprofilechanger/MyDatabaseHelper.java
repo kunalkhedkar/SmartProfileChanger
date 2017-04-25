@@ -2,6 +2,7 @@ package com.example.kunal.smartprofilechanger;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -23,7 +24,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
 
     public MyDatabaseHelper(Context context) {
-
         super(context, DATABASE_NAME, null, 1);
     }
 
@@ -40,7 +40,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                  " + R.string.LNG_DB_COLOUM + "DOUBLE," +
                  " + R.string.SOUND_PROFILE_DB_COLOUM + " INTEGER)");
 */
-
 
     }
 

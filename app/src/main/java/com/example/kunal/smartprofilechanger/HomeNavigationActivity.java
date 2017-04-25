@@ -2,9 +2,11 @@ package com.example.kunal.smartprofilechanger;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -51,6 +53,7 @@ public class HomeNavigationActivity extends AppCompatActivity
     double latitude, longitude;
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog progressDialog_placePicker;
+    private BroadcastReceiver locationFenceReceiver;
 
 
     @Override
@@ -59,10 +62,10 @@ public class HomeNavigationActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
 
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Awareness.API)
-                .build();
-        mGoogleApiClient.connect();
+        initGoogleAwareness();
+
+        registerLocationFenceReceiver();
+
 
 
         //----------------------------------------------------------
@@ -91,10 +94,26 @@ public class HomeNavigationActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        setHomePage();
+        DisplayHomePage();
     }
 
-    private void setHomePage() {
+    private void initGoogleAwareness() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Awareness.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    private void registerLocationFenceReceiver() {
+
+        locationFenceReceiver = new LocationFenceReceiver();
+        this.registerReceiver(locationFenceReceiver, new IntentFilter(LocationFenceReceiver.LOCATION_RECEIVER_ACTION));
+
+
+    }
+
+
+    private void DisplayHomePage() {
 
         HomeFragment homeFragment = new HomeFragment();
 

@@ -40,8 +40,8 @@ public class AddLocationFragment extends Fragment {
     public final static String TAG = "LOG";
     public final static String LAT_KEY = "LAT_KEY";
     public final static String LNG_KEY = "LNG_KEY";
-    private final static double RADIUS = 100;
-    private final static long dwellTimeMillis = 1 * 1000;
+    FenceOperations fenceOperations;
+
 
     private GoogleApiClient googleApiClient;
 
@@ -54,7 +54,7 @@ public class AddLocationFragment extends Fragment {
 
 
     MyDatabaseHelper myDatabaseHelper;
-    private LocationFenceReceiver locationFenceReceiver;
+
 
     public AddLocationFragment() {
         // Required empty public constructor
@@ -70,13 +70,6 @@ public class AddLocationFragment extends Fragment {
         args.putDouble(LNG_KEY, longitude);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    private void initGoogleAwareness() {
-        googleApiClient = new GoogleApiClient.Builder(getContext())
-                .addApi(Awareness.API)
-                .build();
-        googleApiClient.connect();
     }
 
 
@@ -96,7 +89,7 @@ public class AddLocationFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_add_location, container, false);
 
-
+        fenceOperations = new FenceOperations(getContext());
         myDatabaseHelper = new MyDatabaseHelper(getContext());
 
 
@@ -126,10 +119,10 @@ public class AddLocationFragment extends Fragment {
                         Toast.makeText(getContext(), "Location added successfully", Toast.LENGTH_SHORT).show();
 
 
-                        createAndRegisterFence(lat, lng, loc_name);
+                        fenceOperations.register_SingleFence(lat, lng, loc_name);
 
 
-                        setHomePageFragment();
+                        DisplayHomePageFragment();
                     } else
                         Toast.makeText(getContext(), "Location name already exists ", Toast.LENGTH_SHORT).show();
                     refillingDataToForm(loc_name, soundProfileSpinner.getSelectedItemPosition(), lat, lng);
@@ -148,13 +141,10 @@ public class AddLocationFragment extends Fragment {
                 Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
 
 
-                setHomePageFragment();
+                DisplayHomePageFragment();
 
             }
         });
-
-
-
 
 
         setValue_lat_lng();
@@ -167,6 +157,15 @@ public class AddLocationFragment extends Fragment {
         return view;
 
     }
+
+
+    private void initGoogleAwareness() {
+        googleApiClient = new GoogleApiClient.Builder(getContext())
+                .addApi(Awareness.API)
+                .build();
+        googleApiClient.connect();
+    }
+
 
     private void refillingDataToForm(String loc_name, int position, Double lat, Double lng) {
 
@@ -210,47 +209,12 @@ public class AddLocationFragment extends Fragment {
     }
 
 
-    private void createAndRegisterFence(final double lat, final double lng, final String loc_name_asfence_key) {
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        AwarenessFence spaceFence = LocationFence.in(lat, lng, RADIUS, dwellTimeMillis);
-        locationFenceReceiver = new LocationFenceReceiver();
-
-
-        Intent receiverIntent = new Intent(LocationFenceReceiver.LOCATION_RECEIVER_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, receiverIntent, 0);
-        // register to Google Awareness
-        Awareness.FenceApi.updateFences(googleApiClient,
-                new FenceUpdateRequest.Builder().addFence(loc_name_asfence_key, spaceFence, pendingIntent).build()).
-                setResultCallback(new ResultCallbacks<Status>() {
-                    @Override
-                    public void onSuccess(@NonNull Status status) {
-                        Log.d(TAG, "onSuccess: Fence has been registered " + loc_name_asfence_key);
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Status status) {
-                        Log.d(TAG, "onSuccess: Fail to resister fence " + loc_name_asfence_key);
-                        Toast.makeText(getContext(), "Fail to resister fence", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-    }
 
 
     @Override
     public void onStart() {
         super.onStart();
-        getActivity().registerReceiver(locationFenceReceiver, new IntentFilter(LocationFenceReceiver.LOCATION_RECEIVER_ACTION));
+        // getActivity().registerReceiver(locationFenceReceiver, new IntentFilter(LocationFenceReceiver.LOCATION_RECEIVER_ACTION));
     }
 
     @Override
@@ -270,9 +234,7 @@ public class AddLocationFragment extends Fragment {
     }
 
 
-
-
-    private void setHomePageFragment() {
+    private void DisplayHomePageFragment() {
         HomeFragment homeFragment = new HomeFragment();
 
         FragmentManager fragmentManager = getFragmentManager();
