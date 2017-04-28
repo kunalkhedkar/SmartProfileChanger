@@ -136,7 +136,7 @@ public class AddLocationFragment extends Fragment {
 
         initGoogleAwareness();
 
-        // add
+        // add action
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
