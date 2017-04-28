@@ -83,4 +83,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
+
+    public boolean deleteLocation(String locationName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.execSQL("delete from table_location where LOCATION_NAME= " + "'" + locationName + "'");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 }

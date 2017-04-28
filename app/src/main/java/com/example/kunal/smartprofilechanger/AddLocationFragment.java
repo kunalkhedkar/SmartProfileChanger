@@ -40,6 +40,12 @@ public class AddLocationFragment extends Fragment {
     public final static String TAG = "LOG";
     public final static String LAT_KEY = "LAT_KEY";
     public final static String LNG_KEY = "LNG_KEY";
+    public final static String LOCATION_NAME = "LOCATION_NAME";
+    public final static String SOUND_PROFILE = "SOUND_PROFILE";
+    private static boolean useAddLocationFragemntForEdit = false;
+
+
+
     FenceOperations fenceOperations;
 
 
@@ -48,12 +54,14 @@ public class AddLocationFragment extends Fragment {
     View view;
     private Spinner soundProfileSpinner;
     private Double LATITUDE, LONGITUDE;
+    private String edit_location_name, soundProfile;
     private TextView tv_lat, tv_lng;
     private EditText locationName;
     private Button addButton, cancelButton;
 
 
     MyDatabaseHelper myDatabaseHelper;
+
 
 
     public AddLocationFragment() {
@@ -72,13 +80,34 @@ public class AddLocationFragment extends Fragment {
         return fragment;
     }
 
+    public static AddLocationFragment newInstance(String loc_name, double latitude, double longitude, String soundprofile) {
+
+        useAddLocationFragemntForEdit = true;
+
+        AddLocationFragment fragment = new AddLocationFragment();
+
+        Bundle args = new Bundle();
+        args.putString(LOCATION_NAME, loc_name);
+        args.putDouble(LAT_KEY, latitude);
+        args.putDouble(LNG_KEY, longitude);
+        args.putString(SOUND_PROFILE, soundprofile);
+
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+
             LATITUDE = getArguments().getDouble(LAT_KEY);
             LONGITUDE = getArguments().getDouble(LNG_KEY);
+
+            if (useAddLocationFragemntForEdit) {
+                edit_location_name = getArguments().getString(LOCATION_NAME);
+                soundProfile = getArguments().getString(SOUND_PROFILE);
+            }
         }
     }
 
@@ -101,6 +130,10 @@ public class AddLocationFragment extends Fragment {
         addButton = (Button) view.findViewById(R.id.addButton);
         cancelButton = (Button) view.findViewById(R.id.cancelButton);
 
+        if (useAddLocationFragemntForEdit) {
+            prepareAddLocationForEdit();
+        }
+
         initGoogleAwareness();
 
         // add
@@ -115,6 +148,9 @@ public class AddLocationFragment extends Fragment {
                     Double lng = Double.parseDouble(tv_lng.getText().toString());
 
 
+                    myDatabaseHelper.deleteLocation(edit_location_name);
+                    fenceOperations.unRegister_SingleFence(edit_location_name);
+
                     if (myDatabaseHelper.insertLocationToDatabase(loc_name, lat, lng, soundProfile)) {
                         Toast.makeText(getContext(), "Location added successfully", Toast.LENGTH_SHORT).show();
 
@@ -125,7 +161,7 @@ public class AddLocationFragment extends Fragment {
                         DisplayHomePageFragment();
                     } else
                         Toast.makeText(getContext(), "Location name already exists ", Toast.LENGTH_SHORT).show();
-                    refillingDataToForm(loc_name, soundProfileSpinner.getSelectedItemPosition(), lat, lng);
+                    refillingDataToForm(loc_name, lat, lng, soundProfileSpinner.getSelectedItemPosition());
                 }
 
 
@@ -158,6 +194,28 @@ public class AddLocationFragment extends Fragment {
 
     }
 
+    private void prepareAddLocationForEdit() {
+
+        addButton.setText("Save");
+
+
+        refillingDataToForm(edit_location_name, LATITUDE, LONGITUDE, getSpinnerIndex());
+
+
+    }
+
+    private int getSpinnerIndex() {
+        int index = -1;
+
+        for (int i = 0; i < soundProfileSpinner.getCount(); i++) {
+
+            if (soundProfileSpinner.getItemAtPosition(i).equals(soundProfile)) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
 
     private void initGoogleAwareness() {
         googleApiClient = new GoogleApiClient.Builder(getContext())
@@ -167,7 +225,7 @@ public class AddLocationFragment extends Fragment {
     }
 
 
-    private void refillingDataToForm(String loc_name, int position, Double lat, Double lng) {
+    private void refillingDataToForm(String loc_name, Double lat, Double lng, int position) {
 
         locationName.setText(loc_name);
         tv_lat.setText(String.valueOf(lat));
