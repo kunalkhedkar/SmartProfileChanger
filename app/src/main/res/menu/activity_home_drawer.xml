@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <item android:title="Add Location">
@@ -19,10 +20,13 @@
 
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings"
-            android:title="Settings" />
-    </group>
 
+
+        <item
+            android:id="@+id/nav_switchOnOffGPS_item"
+            android:icon="@drawable/ic_settings"
+            android:title="Activate Application"
+            app:actionLayout="@layout/layout_switch" />
+
+    </group>
 </menu>

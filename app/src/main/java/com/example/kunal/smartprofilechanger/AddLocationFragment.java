@@ -45,23 +45,16 @@ public class AddLocationFragment extends Fragment {
     private static boolean useAddLocationFragemntForEdit = false;
 
 
-
     FenceOperations fenceOperations;
-
-
-    private GoogleApiClient googleApiClient;
-
     View view;
+    MyDatabaseHelper myDatabaseHelper;
+    private GoogleApiClient googleApiClient;
     private Spinner soundProfileSpinner;
     private Double LATITUDE, LONGITUDE;
     private String edit_location_name, soundProfile;
     private TextView tv_lat, tv_lng;
     private EditText locationName;
     private Button addButton, cancelButton;
-
-
-    MyDatabaseHelper myDatabaseHelper;
-
 
 
     public AddLocationFragment() {
@@ -147,14 +140,15 @@ public class AddLocationFragment extends Fragment {
                     Double lat = Double.parseDouble(tv_lat.getText().toString());
                     Double lng = Double.parseDouble(tv_lng.getText().toString());
 
+                    if (useAddLocationFragemntForEdit) {
 
-                    myDatabaseHelper.deleteLocation(edit_location_name);
-                    fenceOperations.unRegister_SingleFence(edit_location_name);
-
+                        myDatabaseHelper.deleteLocation(edit_location_name);
+                        fenceOperations.unRegister_SingleFence(edit_location_name);
+                    }
                     if (myDatabaseHelper.insertLocationToDatabase(loc_name, lat, lng, soundProfile)) {
                         Toast.makeText(getContext(), "Location added successfully", Toast.LENGTH_SHORT).show();
 
-
+                        fenceOperations.unRegister_SingleFence(loc_name);
                         fenceOperations.register_SingleFence(lat, lng, loc_name);
 
 
@@ -163,7 +157,6 @@ public class AddLocationFragment extends Fragment {
                         Toast.makeText(getContext(), "Location name already exists ", Toast.LENGTH_SHORT).show();
                     refillingDataToForm(loc_name, lat, lng, soundProfileSpinner.getSelectedItemPosition());
                 }
-
 
 
             }
@@ -265,8 +258,6 @@ public class AddLocationFragment extends Fragment {
         tv_lng.setText(String.valueOf(LONGITUDE));
 
     }
-
-
 
 
     @Override

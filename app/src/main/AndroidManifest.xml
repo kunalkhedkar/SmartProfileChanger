@@ -31,6 +31,17 @@
             android:value="AIzaSyBSoHIYibbPT0sfvfCj5Xq6LDX7w3W6lO4" />
 
 
+        <receiver
+            android:name=".LocationFenceReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.kunal.smartprofilechanger.LOCATION_RECEIVER_ACTION" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".GPSService" />
+
+
     </application>
 
 </manifest>

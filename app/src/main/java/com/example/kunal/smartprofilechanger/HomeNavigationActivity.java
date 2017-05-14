@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -18,13 +19,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.awareness.Awareness;
@@ -46,7 +51,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 public class HomeNavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
+    private boolean firstTimeRunActivity = true;
     private static final int PLACE_PICKER_REQUEST_CODE = 123;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     private static final String ACCESS_FINE_LOCATION = "android.permission.ACCESS_FINE_LOCATION";
@@ -54,7 +59,10 @@ public class HomeNavigationActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog progressDialog_placePicker;
     private BroadcastReceiver locationFenceReceiver;
+    private SwitchCompat switchCompat;
+    private Intent GPSServiceintent;
 
+    public static final String TAG = "smartprofilechanger";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +74,7 @@ public class HomeNavigationActivity extends AppCompatActivity
 
         registerLocationFenceReceiver();
 
-
+        GPSServiceintent = new Intent(this, GPSService.class);
 
         //----------------------------------------------------------
 
@@ -93,8 +101,38 @@ public class HomeNavigationActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Menu menu = navigationView.getMenu();
+
+        // switch button
+        switchCompat = (SwitchCompat) MenuItemCompat.getActionView(menu.findItem(R.id.nav_switchOnOffGPS_item)).findViewById(R.id.drawer_switch_onOffGPS);
+
+        if (GPSService.isInstanceCreated() && firstTimeRunActivity) {
+            switchCompat.setChecked(true);
+            firstTimeRunActivity = false;
+        }
+
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (switchCompat.isChecked()) {
+                    firstTimeRunActivity = false;
+                    Toast.makeText(HomeNavigationActivity.this, "Activated", Toast.LENGTH_SHORT).show();
+                    startService(GPSServiceintent);
+                } else {
+                    firstTimeRunActivity = false;
+                    Toast.makeText(HomeNavigationActivity.this, "DeActivated", Toast.LENGTH_SHORT).show();
+                    stopService(GPSServiceintent);
+                }
+            }
+        });
+
+
+
+
 
         DisplayHomePage();
+
     }
 
     private void initGoogleAwareness() {
@@ -173,10 +211,6 @@ public class HomeNavigationActivity extends AppCompatActivity
 
             getLocationFrom_map();
 
-
-        } else if (id == R.id.nav_settings) {
-
-            Toast.makeText(this, "TODO", Toast.LENGTH_SHORT).show();
 
         }
 

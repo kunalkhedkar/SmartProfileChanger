@@ -215,6 +215,9 @@ public class HomeFragment extends Fragment {
                 details.add(locationDetail);
 
             }
+        } else if (cursor.getCount() == 0) {
+            TextView EmptyList_ShowMessage = (TextView) view.findViewById(R.id.EmptyListShowMsgTextbox);
+            EmptyList_ShowMessage.setVisibility(View.VISIBLE);
         }
         return details;
 
