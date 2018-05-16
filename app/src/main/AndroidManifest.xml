@@ -25,10 +25,10 @@
 
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
-            android:value="AIzaSyBSoHIYibbPT0sfvfCj5Xq6LDX7w3W6lO4" />
+            android:value="google_api_key" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBSoHIYibbPT0sfvfCj5Xq6LDX7w3W6lO4" />
+            android:value="google_api_key" />
 
 
         <receiver
